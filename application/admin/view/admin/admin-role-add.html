@@ -1,0 +1,141 @@
+﻿{include file='common/meta'}
+<title>新建网站角色 - 管理员管理 - H-ui.admin v3.1</title>
+</head>
+<body>
+<article class="page-container">
+	<form action="{if condition='empty($info) eq true'}{:url('admin/admin/addRole')}{else}{:url('admin/admin/updateRole',array('id'=>$info.role_id))}{/if}" method="post" class="form form-horizontal" id="form-admin-role-add">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>角色名称：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="{if condition='!empty($info) eq true'}{$info.role_name}{/if}" placeholder="" id="roleName" name="roleName">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">备注：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="{if condition='!empty($info) eq true'}{$info.desc}{/if}" placeholder="" id="desc" name="desc">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">网站角色：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				{volist name='data' id='vo'}
+				<dl class="permission-list">
+					<dt>
+						<label>
+							<input type="checkbox" value="{$vo.id}" {if condition='(!empty($info) eq true) and in_array($vo.id,$info.menu)'}checked{/if} name="menuid[]" id="user-Character-0">
+							{$vo.name}</label>
+					</dt>
+					<dd>
+						{if condition="!empty($vo['cmenu']) eq true"}
+						{volist name='vo.cmenu' id='vv'}
+						<dl class="cl permission-list2">
+							<dt>
+								<label class="">
+									<input type="checkbox" value="{$vv.id}" name="menuid[]" id="user-Character-0-0" {if condition='(!empty($info) eq true) and in_array($vv.id,$info.menu)'}checked{/if} >
+									{$vv.name}</label>
+							</dt>
+							{if condition="!empty($vv['per']) eq true"}
+							<dd>
+								{volist name='vv.per' id='vvo'}
+								<label class="">
+									<input type="checkbox" value="{$vvo.id}" name="menuid[]" id="user-Character-0-0-0" {if condition='(!empty($info) eq true) and in_array($vvo.id,$info.menu)'}checked{/if}>
+									{$vvo.name}</label>
+								{/volist}
+							</dd>
+							{/if}
+						</dl>
+						{/volist}
+						{/if}
+					</dd>
+				</dl>
+				{/volist}
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				<button type="submit" class="btn btn-success radius" id="admin-role-save" name="admin-role-save"><i class="icon-ok"></i> 确定</button>
+			</div>
+		</div>
+	</form>
+</article>
+{include file='common/footer'}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+$(function(){
+	$(".permission-list dt input:checkbox").click(function(){
+		$(this).closest("dl").find("dd input:checkbox").prop("checked",$(this).prop("checked"));
+	});
+
+	$(".permission-list2 dt input:checkbox").click(function(){
+		$(this).parents(".permission-list").find("dt").first().find("input:checkbox").prop("checked",true);
+		var l2=$(this).parents(".permission-list").find(".permission-list2 dd").find("input:checked").length;
+		var l=$(this).parents(".permission-list").find(".permission-list2 dt").find("input:checked").length;
+
+		if(l2==0){
+			$(this).parent(".permission-list").find("dt").first().find("input:checkbox").prop("checked",false);
+		}
+		if (l==0) {
+			$(this).parents(".permission-list").find("dt").first().find("input:checkbox").prop("checked",false);
+		}
+	});
+
+	$(".permission-list2 dd input:checkbox").click(function(){
+		var l =$(this).parent().parent().find("input:checked").length;
+		var l2=$(this).parents(".permission-list").find(".permission-list2 dd").find("input:checked").length;
+		if($(this).prop("checked")){
+			$(this).closest("dl").find("dt input:checkbox").prop("checked",true);
+			$(this).parents(".permission-list").find("dt").first().find("input:checkbox").prop("checked",true);
+		}else{
+			if(l==0){
+				$(this).closest("dl").find("dt input:checkbox").prop("checked",false);
+			}
+			if(l2==0){
+				$(this).parents(".permission-list").find("dt").first().find("input:checkbox").prop("checked",false);
+			}
+		}
+		
+	});
+	
+	$("#form-admin-role-add").validate({
+		rules:{
+			roleName:{
+				required:true,
+			},
+		},
+		onkeyup:false,
+		focusCleanup:true,
+		success:"valid",
+		// submitHandler:function(form){
+		// 	$(form).ajaxSubmit();
+		// 	var index = parent.layer.getFrameIndex(window.name);
+		// 	parent.layer.close(index);
+		// }
+		
+	});
+
+	$('#admin-role-save').click(function(){
+		var tmp = $("input[type='checkbox']").is(':checked');
+		var name = $.trim($('#roleName').val());
+		var desc = $.trim($('#desc').val());
+		var reg = /^[\u4E00-\u9FA5]{1,5}$/;
+		if (name=='') {
+			alert('角色名称不能为空');return false;
+		}
+		if(!reg.test(name)||!reg.test(desc)) {
+	    	alert("名称和描述只支持中文字符");return false;
+		} 
+		if (tmp==false) {
+			alert('请选择网站角色');
+			return false;
+		}
+	});
+});
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

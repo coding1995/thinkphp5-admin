@@ -1,0 +1,171 @@
+{include file='common/meta' /}
+<title>栏目设置</title>
+</head>
+<body>
+<div class="page-container">
+	<form action="" method="post" class="form form-horizontal" id="form-category-add">
+		<div id="tab-category" class="HuiTab">
+			<div class="tabBar cl">
+				<span>基本设置</span>
+			</div>
+			<div class="tabCon">
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3">
+						<span class="c-red">*</span>
+						上级菜单：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<span class="select-box">
+						<select class="select" id="parent_id" name="parent_id" >
+							<option value="0" {if condition='(!empty($info) eq true) and $info.parent_id eq 0'}selected{/if} >顶级菜单</option>
+							{volist name='menuInfo' id='vo'}
+							<option value="{$vo.id}" {if condition='(!empty($info) eq true) and $info.parent_id eq $vo.id'}selected{/if} >{$vo.name}</option>
+							{/volist}
+							</select>
+						</span>
+					</div>
+					<div class="col-3">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3">
+						<span class="c-red">*</span>
+						菜单名称：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="{if condition='!empty($info) eq true'}{$info.name}{/if}" placeholder="" id="name" name="name">
+					</div>
+					<div class="col-3">
+					</div>
+				</div>
+				{if condition='(!empty($info) eq true) and (!empty($info.url) eq true)'}
+				<div class="row cl"  id="url_is_show">
+					<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>url：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="{$info.url}" placeholder="" id="url" name="url">
+					</div>
+					<div class="col-3">
+					</div>
+				</div>
+				{else}
+				<div class="row cl" style="display: none" id="url_is_show">
+					<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>url：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="" placeholder="" id="url" name="url">
+					</div>
+					<div class="col-3">
+					</div>
+				</div>
+				{/if}
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3">排序：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<input type="text" class="input-text" value="{if condition='!empty($info) eq true'}{$info.sort}{/if}" placeholder="" id="" name="sort">
+					</div>
+					<div class="col-3">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3">是否显示：</label>
+					<div class="formControls col-xs-8 col-sm-9 skin-minimal">
+						<div class="radio-box">
+							<input name="is_show" {if condition='(!empty($info) eq true) and $info.status eq 1'}checked{/if} type="radio" value="1" id="sex-1" checked>
+							<label for="sex-1">yes</label>
+						</div>
+						<div class="radio-box">
+							<input type="radio" {if condition='(!empty($info) eq true) and $info.status eq 2'}checked{/if} id="sex-2" value="2" name="is_show">
+							<label for="sex-2">no</label>
+						</div>
+					</div>
+					<div class="col-3">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-9 col-offset-3">
+				<input class="btn btn-primary radius" type="button" onclick="check();" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+				<input type="hidden" id="tmp_url" value="{if condition='empty($info) eq true'}{:url('admin/menu/addMenu')}{else}{:url('admin/menu/updateMenu',array('id'=>$info.id))}{/if}">
+			</div>
+		</div>
+	</form>
+</div>
+{include file='common/footer' /}
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script> 
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+$(function(){
+	$('.skin-minimal input').iCheck({
+		checkboxClass: 'icheckbox-blue',
+		radioClass: 'iradio-blue',
+		increaseArea: '20%'
+	});
+	
+	$("#tab-category").Huitab({
+		index:0
+	});
+	$("#form-category-add").validate({
+		rules:{
+			
+		},
+		onkeyup:false,
+		focusCleanup:true,
+		success:"valid",
+		submitHandler:function(form){
+			//$(form).ajaxSubmit();
+			var index = parent.layer.getFrameIndex(window.name);
+			//parent.$('.btn-refresh').click();
+			parent.layer.close(index);
+		}
+	});
+});
+
+$('#parent_id').change(function () {
+	var p1=$(this).children('option:selected').val();
+	if (p1==0) {
+		$('#url_is_show').hide();
+	} else {
+		$('#url_is_show').show();
+	}
+});
+
+
+function check(){
+    var name = $('#name').val();
+    var parent_id = $('#parent_id').val();
+    var url = $('#url').val();
+    var sort = $('#sort').val();
+    var tmp_url = $('#tmp_url').val();
+    var is_show = $('input:radio[name="is_show"]:checked').val();
+    if(name == ''){
+        alert('菜单名称不可为空');return false;
+    }
+    if (parent_id!=0) {
+    	if (url=='') { 
+    		alert('url不可为空');return false;
+    	}
+    } 
+    $.post(
+    	tmp_url,
+    	{name:name,parent_id:parent_id,url:url,sort:sort,is_show:is_show}, 
+    	function (dat) {
+	        var data = JSON.parse(dat);
+	        if(data.status == 1){
+	        	alert(data.msg);
+	            // layer.msg('添加成功!',{icon:1,time:3000});
+				var index = parent.layer.getFrameIndex(window.name);
+				parent.$('.btn-refresh').click();
+				window.parent.location.reload();
+				parent.layer.close(index);
+	        }else{
+	        	var msgs = data.msg;
+	            layer.msg(msgs,{icon:2,time:2000});
+	        }
+    });
+}
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

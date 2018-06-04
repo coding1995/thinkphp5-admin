@@ -1,0 +1,19 @@
+<aside class="Hui-aside">
+	<div class="menu_dropdown bk_2">
+		{volist name='menuinfo' id='vo'}
+		<dl id="menu-admin">
+			<dt><i class="Hui-iconfont">&#xe62d;</i> {$vo.name}<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dd>
+				<ul>
+					{if condition="!empty($vo['cmenu']) eq true"}
+					{volist name='vo.cmenu' id='vv'}
+					<li><a data-href="{:url($vv.url)}" data-title="{$vv.name}" href="javascript:void(0)">{$vv.name}</a></li>
+					{/volist}
+					{/if}
+				</ul>
+			</dd>
+		</dl>
+		{/volist}
+	</div>
+</aside>
+<div class="dislpayArrow hidden-xs"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>
