@@ -103,7 +103,7 @@ function check(){
 	if (name==''||url=='') {
 		alert('请填写信息');return false;
 	}
-	if(reg.test(name)) {
+	if(!reg.test(name)) {
 	    alert("名称只支持中文字符");
 	    return false;
 	} 

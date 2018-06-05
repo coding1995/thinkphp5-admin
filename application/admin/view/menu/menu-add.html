@@ -142,6 +142,11 @@ function check(){
     if(name == ''){
         alert('菜单名称不可为空');return false;
     }
+    var reg = /^[\u4E00-\u9FA5]{1,5}$/;
+	if(!reg.test(name)) {
+	    alert("名称只支持中文字符");
+	    return false;
+	}
     if (parent_id!=0) {
     	if (url=='') { 
     		alert('url不可为空');return false;

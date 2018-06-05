@@ -151,10 +151,10 @@ function check(){
 		alert('请填写完整信息');return false;
 	}
 	var reg = /^[\u4E00-\u9FA5]{1,5}$/;
-	// if(!reg.test(names)) {
-	//     alert("名称只支持中文字符");
-	//     return false;
-	// }
+	if(!reg.test(names)) {
+	    alert("名称只支持中文字符");
+	    return false;
+	}
 	var tmp_url = $('#tmp_url').val();
 	if (tmp_url=='') {
 		alert('未知错误');return false;
