@@ -69,8 +69,8 @@ class Menus extends Model
         }
 
         $cmenu_info = Db::name('admin_menu')->where(array('parent_id'=>$id))->find();
-        if (!empty($info)) {
-             return array('status'=>0,'msg'=>'当前菜单栏有子菜单,不可删除');
+        if (!empty($cmenu_info)) {
+             return array('status'=>0,'msg'=>'当前菜单栏有子菜单或者子权限,不可删除');
         } else {
             $res = Db::name('admin_menu')->where(array('id'=>$id))->delete();
             if (!$res) {
