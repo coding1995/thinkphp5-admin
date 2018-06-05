@@ -29,6 +29,10 @@ class Admins extends Model
 		if (empty($info)) {
 			return array('status'=>0,'msg'=>'信息有误');
 		}
+
+		if ($info['names']=='admin') {
+			return array('status'=>0,'msg'=>'admin用户不可删除');
+		}
 		$res = Db::name('admin_user')->where(array('id'=>$id))->delete();
         if (!$res) {
             return array('status'=>0,'msg'=>'删除失败');
