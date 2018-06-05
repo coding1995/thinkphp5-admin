@@ -93,6 +93,7 @@ class Admin extends Base {
         $id = input('id');
         if (request()->post()) {
             $info = Db::name('admin_user')->where(array('id'=>$id))->find();
+            
             $update_data= array();
             $update_data['names'] = input('names');
             $update_data['email'] = input('email');
@@ -105,10 +106,15 @@ class Admin extends Base {
             $update_data['status'] = input('status');
             $update_data['role_id'] = input('role_id');
             $update_data['add_time'] = time();
-            $info = Db::name('admin_user')->where(array('names'=>input('names')))->where('id','neq',$id)->select();
-            if (!empty($info)) {
+            $info_tmp = Db::name('admin_user')->where(array('names'=>input('names')))->where('id','neq',$id)->select();
+            if (!empty($info_tmp)) {
                 exit(json_encode(array('status'=>0,'msg'=>'当前名称已存在')));
             }
+
+            if ($info['names']=='admin'&&$update_data['status']==2) {
+                exit(json_encode(array('status'=>0,'msg'=>'admin用户不可修改状态为禁用')));
+            }
+            
             $res = Db::name('admin_user')->where(array('id'=>$id))->update($update_data);
             if ($res) {
                 exit(json_encode(array('status'=>1,'msg'=>'编辑成功','url'=>'admin/admin/index')));
