@@ -137,6 +137,10 @@ function logs($name, $value, $file = __FILE__, $line = __LINE__) {
  */
 function app_log($name,$value,$file=__FILE__,$line=__LINE__){
     $value="<?exit;?".">$file\t$line\t".$value."\n";
+    if (!is_dir(ROOT_PATH.'cache')){//当路径不穿在  
+        mkdir(ROOT_PATH.'cache', 0777); 
+        chmod(ROOT_PATH.'cache', 0777);
+    }
     file_put_contents(ROOT_PATH.'cache/log.'.$name.'.php',$value,FILE_APPEND);
 }
 
