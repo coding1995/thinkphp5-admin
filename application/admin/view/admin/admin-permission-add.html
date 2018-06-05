@@ -17,7 +17,7 @@
 						<span class="select-box">
 						<select class="select" id="parent_id" name="parent_id">
 							{volist name='data' id='vo'}
-							<option value="{$vo.id}"{if condition='(!empty($info) eq true) and $vo.id eq $info.id'}selected{/if}>{$vo.name}</option>
+							<option value="{$vo.id}"{if condition='(!empty($info) eq true) and $vo.id eq $info.parent_id'}selected{/if}>{$vo.name}</option>
 							{/volist}
 						</select>
 						</span>
