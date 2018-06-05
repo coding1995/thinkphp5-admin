@@ -21,7 +21,7 @@ class Login extends Controller
                 $name = input('post.name');
                 $pwd = input('post.pwd');
                 $is_rem = input('post.is_rem');
-                if ($is_rem != 1) {
+                if ($is_rem!=1) {
                     $pwd = pswCrypt($pwd);
                 }
 
@@ -57,6 +57,8 @@ class Login extends Controller
                 }
                 //记录时间及ip
                 Db::name('admin_user')->where(array('id'=>$userInfo['id']))->update(['last_login'=>date('Y-m-d H:i:s', time()), 'last_ip'=>request()->ip()]);
+                //打印日志
+                logs('login','ip：'.request()->ip().'——name：'.$name,__FILE__,__LINE__);
                 exit(json_encode(array('status'=>1,'msg'=>'登录成功')));
                 
 

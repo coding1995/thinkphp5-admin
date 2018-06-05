@@ -114,3 +114,30 @@ function array_child_append($parent, $pid, $child, $child_key_name) {
 }
 
 
+/**
+ * [log description]打印日志
+ * @param  [type] $name  [description]
+ * @param  [type] $value [description]
+ * @param  [type] $file  [description]
+ * @param  [type] $line  [description]
+ * @return [type]        [description]
+ */
+function logs($name, $value, $file = __FILE__, $line = __LINE__) {
+    $value = date('Y-m-d H:i:s') . " " . $value;
+    return app_log(date('Ymd') . $name, $value, "", $line);
+}
+
+/**
+ * [app_log description]日志
+ * @param  [type] $name  [description]
+ * @param  [type] $value [description]
+ * @param  [type] $file  [description]
+ * @param  [type] $line  [description]
+ * @return [type]        [description]
+ */
+function app_log($name,$value,$file=__FILE__,$line=__LINE__){
+    $value="<?exit;?".">$file\t$line\t".$value."\n";
+    file_put_contents(ROOT_PATH.'cache/log.'.$name.'.php',$value,FILE_APPEND);
+}
+
+
