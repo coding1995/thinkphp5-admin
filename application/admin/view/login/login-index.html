@@ -76,6 +76,7 @@
               if(data.status == 1){
                   window.location.href = "{url('admin/index/index')}";
               }else{
+                  refreshVerify();
                   alert(data.msg);return false;
               }
         });
