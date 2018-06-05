@@ -29,7 +29,6 @@ class Admins extends Model
 		if (empty($info)) {
 			return array('status'=>0,'msg'=>'信息有误');
 		}
-
 		if ($info['names']=='admin') {
 			return array('status'=>0,'msg'=>'admin用户不可删除');
 		}
@@ -52,6 +51,9 @@ class Admins extends Model
 		$info = Db::name('admin_user')->where(array('id'=>$id))->find();
 		if (empty($info)) {
 			return array('status'=>0,'msg'=>'信息有误');
+		}
+		if ($info['names']=='admin') {
+			return array('status'=>0,'msg'=>'admin用户不可修改状态为禁用');
 		}
 		$res = Db::name('admin_user')->where(array('id'=>$id))->update(array('status'=>$status));
         if ($res) {
