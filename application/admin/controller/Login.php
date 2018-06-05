@@ -20,7 +20,6 @@ class Login extends Controller
             if (request()->post()) {
                 $name = input('post.name');
                 $pwd = input('post.pwd');
-
                 $is_rem = input('post.is_rem');
                 if ($is_rem!=1) {
                     $pwd = pswCrypt($pwd);
@@ -56,7 +55,10 @@ class Login extends Controller
                     Cookie::delete('cu');
                     Cookie::delete('CSDFDSA');
                 }
-                exit(json_encode(array('status'=>1,'msg'=>'登录成功'))) ;
+                //记录时间及ip
+                Db::name('admin_user')->where(array('id'=>$userInfo['id']))->update(['last_login'=>date('Y-m-d H:i:s', time()), 'last_ip'=>request()->ip()]);
+                exit(json_encode(array('status'=>1,'msg'=>'登录成功')));
+                
 
             } else {
                 $name = Cookie::get('cu');
@@ -83,10 +85,11 @@ class Login extends Controller
     }
 
     public function test(){
-        $a = Session::get('admin_user');
-        $name = Cookie::get('cu');
-        $pwd = Cookie::get('CSDFDSA');
-        var_dump($pwd);
+
+        // $a = Session::get('admin_user');
+        // $name = Cookie::get('cu');
+        // $pwd = Cookie::get('CSDFDSA');
+        // var_dump($pwd);
         // $num = '123456';
         // $num = pswCrypt($num);
         // print_r($num);
