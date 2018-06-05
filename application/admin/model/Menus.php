@@ -48,6 +48,17 @@ class Menus extends Model
             return array('status'=>0,'msg'=>'信息错误');
         }
 
+        $data = Db::name('admin_role')->field('menu_id')->select();
+        $tmp = array();
+        foreach ($data as $key => $value) {
+            $tmp[] = explode(',', $value['menu_id']);
+        }
+        foreach ($tmp as $k => $v) {
+            if (in_array($id, $v)) {
+                return array('status'=>0,'msg'=>'当前子权限已绑定了角色,需要解除绑定才可以删除');
+            }
+        }
+
         $res = Db::name('admin_menu')->where(array('id'=>$id))->delete();
         if (!$res) {
             return array('status'=>0,'msg'=>'删除失败');
