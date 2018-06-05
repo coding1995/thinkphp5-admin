@@ -21,7 +21,7 @@ class Login extends Controller
                 $name = input('post.name');
                 $pwd = input('post.pwd');
                 $is_rem = input('post.is_rem');
-                if ($is_rem!=1) {
+                if ($is_rem != 1) {
                     $pwd = pswCrypt($pwd);
                 }
 
