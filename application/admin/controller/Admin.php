@@ -6,6 +6,7 @@ use app\admin\model\Roles;
 use think\Db;
 use think\Session;
 use app\admin\controller\Base;
+use think\cache\driver\Redis;
 
 class Admin extends Base {
 
@@ -326,20 +327,11 @@ class Admin extends Base {
 
     public function test(){
         echo '<pre>';
-        $data = Db::name('admin_role')->field('menu_id')->select();
-        $tmp = array();
-        foreach ($data as $key => $value) {
-            $tmp[] = explode(',', $value['menu_id']);
-        }
-        foreach ($tmp as $k => $v) {
-            if (in_array(90,$v)) {
-                echo 22;
-            } else {
-                echo 333;
-            }
-        }
-        
-        // var_dump($tmp);
+        $redis = new Redis();
+        $data = array('nums'=>1,'time'=>time());
+        $redis->set('1',$data);
+        $nums = $redis->get('test-nums');
+        var_dump($nums);
     }
     
 }

@@ -5,6 +5,8 @@ use think\Cookie;
 use think\Session;
 use think\captcha;
 use think\Db;
+use think\cache\driver\Redis;
+use app\admin\model\Admins;
 
 class Login extends Controller
 {   
@@ -36,10 +38,42 @@ class Login extends Controller
 
                 $userInfo = Db::name('admin_user')->where(array('names'=>$name))->find();
                 if (empty($userInfo)) {
-                    exit(json_encode(array('status'=>0,'msg'=>'当前用户不存在')));
+                    exit(json_encode(array('status'=>0,'msg'=>'当前用户不存在或者用户名错误')));
                 }
 
-                if($pwd != $userInfo['password']){
+                if($pwd != $userInfo['password']&&$userInfo['names'] != 'admin'){
+                    $redis = new Redis();
+                    $admin = new Admins();
+                    $data = $redis->get($userInfo['names'].'-nums');
+                    if ($data) {
+                        // if ($data['nums']==5) {
+                        //     $admin->update_admin_status($userInfo['id'],2);
+                        //     //删除记录
+                        //     $redis->rm($userInfo['names'].'-nums');
+                        //     exit(json_encode(array('status'=>0,'msg'=>'30分钟内,你已经连续输入密码错误5次，该账号已被禁用')));
+                        // } else {
+                            //判断过期时间
+                            if (time()-$data['time']>=1800) {
+                                $data = array('nums'=>1,'time'=>time());
+                            } else {
+                                $data = array('nums'=>$data['nums']+1,'time'=>$data['time']);
+                            }
+                        // }
+                    } else {
+                        $data = array('nums'=>1,'time'=>time());
+                    }
+                    $redis->set($userInfo['names'].'-nums',$data);
+                    $tmp = 5-$data['nums'];
+                    if ($tmp==0) {
+                        $admin->update_admin_status($userInfo['id'],2);
+                        //删除记录
+                        $redis->rm($userInfo['names'].'-nums');
+                        exit(json_encode(array('status'=>0,'msg'=>'30分钟内,你已经连续输入密码错误5次，该账号已被禁用')));
+                    } else {
+                        exit(json_encode(array('status'=>0,'msg'=>'密码有误,你还有'.$tmp.'次机会')));
+                    }
+                    
+                } else {
                     exit(json_encode(array('status'=>0,'msg'=>'密码有误')));
                 }
 
@@ -47,6 +81,8 @@ class Login extends Controller
                     exit(json_encode(array('status'=>0,'msg'=>'当前用户禁止登录')));
                 }
                 Session::set('admin_user',$name);
+                //删除记录
+                $redis->rm($userInfo['names'].'-nums');
                 if($rempsw == 1){
                     //记住密码 存储于cookie
                     cookie('cu',trim($name),3600*24*30);

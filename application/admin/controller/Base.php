@@ -47,6 +47,7 @@ class Base extends Controller {
         }
 
         $this->assign('menuinfo',$menuinfo);
+        $this->assign('admin',$admin);
         
         
     }
