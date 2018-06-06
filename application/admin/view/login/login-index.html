@@ -17,7 +17,7 @@
 <div class="header"></div>
 <div class="loginWraper">
   <div id="loginform" class="loginBox">
-    <form class="form form-horizontal" action="index.html" method="post">
+    <form class="form form-horizontal" id="login-form" action="index.html" method="post">
       <div class="row cl">
         <label class="form-label col-xs-3"><i class="Hui-iconfont">&#xe60d;</i></label>
         <div class="formControls col-xs-8">
@@ -55,6 +55,8 @@
 <div class="footer">Copyright songqiphp.xin</div>
 <script type="text/javascript" src="__STATIC__/lib/jquery/1.9.1/jquery.min.js"></script> 
 <script type="text/javascript" src="__STATIC__/h-ui/js/H-ui.min.js"></script>
+
+<script type="text/javascript" src="__STATIC__/lib/layer/2.4/layer.js"></script>
 </body>
 </html>
 <script>
@@ -77,12 +79,15 @@
                   window.location.href = "{url('admin/index/index')}";
               }else{
                   refreshVerify();
-                  alert(data.msg);return false;
+                  var msg = data.msg;
+                  layer.msg(msg,{icon:2,time:2000});
+                  return false;
               }
         });
       
     } else {
-      alert('请填写登陆信息');
+        layer.msg('请填写登陆信息',{icon:2,time:2000});
+        return false;
     }
   }
 
