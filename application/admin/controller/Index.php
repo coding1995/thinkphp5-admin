@@ -19,7 +19,8 @@ class Index extends Base
 		$sys_info['curl']			= function_exists('curl_init') ? 'YES' : 'NO';	
 		$sys_info['web_server']     = $_SERVER['SERVER_SOFTWARE'];
 		$sys_info['phpv']           = phpversion();
-		$sys_info['ip'] 			= GetHostByName($_SERVER['SERVER_NAME']);
+		// $sys_info['ip'] 			= GetHostByName($_SERVER['SERVER_NAME']);
+		$sys_info['ip'] 			= '127.0.0.1';
 		$sys_info['fileupload']     = @ini_get('file_uploads') ? ini_get('upload_max_filesize') :'unknown';
 		$sys_info['max_ex_time'] 	= @ini_get("max_execution_time").'s'; //脚本最大执行时间
 		$sys_info['set_time_limit'] = function_exists("set_time_limit") ? true : false;

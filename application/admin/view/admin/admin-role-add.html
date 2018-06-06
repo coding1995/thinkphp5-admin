@@ -3,7 +3,7 @@
 </head>
 <body>
 <article class="page-container">
-	<form action="{if condition='empty($info) eq true'}{:url('admin/admin/addRole')}{else}{:url('admin/admin/updateRole',array('id'=>$info.role_id))}{/if}" method="post" class="form form-horizontal" id="form-admin-role-add">
+	<form class="form form-horizontal" action="" method="" id="form-admin-role-add">
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>角色名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
@@ -23,7 +23,7 @@
 				<dl class="permission-list">
 					<dt>
 						<label>
-							<input type="checkbox" value="{$vo.id}" {if condition='(!empty($info) eq true) and in_array($vo.id,$info.menu)'}checked{/if} name="menuid[]" id="user-Character-0">
+							<input type="checkbox" value="{$vo.id}" {if condition='(!empty($info) eq true) and in_array($vo.id,$info.menu)'}checked{/if} name="menuid" id="user-Character-0">
 							{$vo.name}</label>
 					</dt>
 					<dd>
@@ -32,14 +32,14 @@
 						<dl class="cl permission-list2">
 							<dt>
 								<label class="">
-									<input type="checkbox" value="{$vv.id}" name="menuid[]" id="user-Character-0-0" {if condition='(!empty($info) eq true) and in_array($vv.id,$info.menu)'}checked{/if} >
+									<input type="checkbox" value="{$vv.id}" name="menuid" id="user-Character-0-0" {if condition='(!empty($info) eq true) and in_array($vv.id,$info.menu)'}checked{/if} >
 									{$vv.name}</label>
 							</dt>
 							{if condition="!empty($vv['per']) eq true"}
 							<dd>
 								{volist name='vv.per' id='vvo'}
 								<label class="">
-									<input type="checkbox" value="{$vvo.id}" name="menuid[]" id="user-Character-0-0-0" {if condition='(!empty($info) eq true) and in_array($vvo.id,$info.menu)'}checked{/if}>
+									<input type="checkbox" value="{$vvo.id}" name="menuid" id="user-Character-0-0-0" {if condition='(!empty($info) eq true) and in_array($vvo.id,$info.menu)'}checked{/if}>
 									{$vvo.name}</label>
 								{/volist}
 							</dd>
@@ -55,6 +55,7 @@
 		<div class="row cl">
 			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
 				<button type="submit" class="btn btn-success radius" id="admin-role-save" name="admin-role-save"><i class="icon-ok"></i> 确定</button>
+				<input type="hidden" id="tmp_url" value="{if condition='empty($info) eq true'}{:url('admin/admin/addRole')}{else}{:url('admin/admin/updateRole',array('id'=>$info.role_id))}{/if}">
 			</div>
 		</div>
 	</form>
@@ -110,15 +111,23 @@ $(function(){
 		onkeyup:false,
 		focusCleanup:true,
 		success:"valid",
-		// submitHandler:function(form){
+		submitHandler:function(form){
 		// 	$(form).ajaxSubmit();
 		// 	var index = parent.layer.getFrameIndex(window.name);
 		// 	parent.layer.close(index);
-		// }
+		}
 		
 	});
 
 	$('#admin-role-save').click(function(){
+		//js获取选中的checkbox的value值
+	  	// obj = document.getElementsByName("menuid");
+	   //  check_val = [];
+	   //  for(k in obj){
+	   //      if(obj[k].checked)
+	   //          check_val.push(obj[k].value);
+	   //  }
+	   //  alert(check_val);
 		var tmp = $("input[type='checkbox']").is(':checked');
 		var name = $.trim($('#roleName').val());
 		var desc = $.trim($('#desc').val());
@@ -133,6 +142,45 @@ $(function(){
 			alert('请选择网站角色');
 			return false;
 		}
+
+		//jq获取checkbox选中的value的值
+		var menuid = "";  
+        $("input[name=menuid]").each(function(i){  
+            if(this.checked) {
+		    	if(0==i){  
+	                menuid = $(this).val();  
+	            }else{  
+	                menuid += (","+$(this).val());  
+	            }
+		  	}
+        }); 
+
+        var tmp_url = $('#tmp_url').val();
+		if (tmp_url=='') {
+			alert('未知错误');return false;
+		}
+
+        $.post(
+		tmp_url,
+		{menuid:menuid,desc:desc,name:name},
+		function (dat) {
+			var data = JSON.parse(dat);
+	        if(data.status == 1){
+				layer.msg('添加成功!', {
+				  icon: 1,
+				  time: 2000 //2秒关闭（如果不配置，默认是3秒）
+				}, function(){
+				  	var index = parent.layer.getFrameIndex(window.name);
+					parent.$('.btn-refresh').click();
+					window.parent.location.reload();
+					parent.layer.close(index);
+				}); 
+	        }else{
+	            var msg = data.msg;
+	            layer.msg(msg,{icon:2,time:2000});
+	        }
+		});
+
 	});
 });
 </script>

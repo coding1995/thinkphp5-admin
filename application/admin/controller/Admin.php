@@ -14,6 +14,7 @@ class Admin extends Base {
      * @return [type] [description]
      */
     public function index(){
+        
         $keyword = isset($_POST['keyword'])?$_POST['keyword']:'';
         $where = null;
         if(!empty($keyword)){
@@ -114,7 +115,7 @@ class Admin extends Base {
             if ($info['names']=='admin'&&$update_data['status']==2) {
                 exit(json_encode(array('status'=>0,'msg'=>'admin用户不可修改状态为禁用')));
             }
-            
+
             $res = Db::name('admin_user')->where(array('id'=>$id))->update($update_data);
             if ($res) {
                 exit(json_encode(array('status'=>1,'msg'=>'编辑成功','url'=>'admin/admin/index')));
@@ -154,18 +155,18 @@ class Admin extends Base {
     public function addRole(){
         if(request()->post()){
             $insert_data= array();
-            $insert_data['role_name'] = $_POST['roleName'];
+            $insert_data['role_name'] = $_POST['name'];
             $insert_data['desc'] = $_POST['desc'];
-            $insert_data['menu_id'] = implode(',',$_POST['menuid']);
-            $info = Db::name('admin_role')->where(array('role_name'=>$_POST['roleName']))->select();
+            $insert_data['menu_id'] = $_POST['menuid'];
+            $info = Db::name('admin_role')->where(array('role_name'=>$_POST['name']))->select();
             if (!empty($info)) {
-                $this->error('角色名已存在');
+                exit(json_encode(array('status'=>0,'msg'=>'当前名称已存在')));
             }
             $res = Db::name('admin_role')->insert($insert_data);
             if ($res) {
-                $this->success('添加成功','admin/admin/role');
+                exit(json_encode(array('status'=>1,'msg'=>'添加成功')));
             } else {
-                $this->error('添加失败');
+                exit(json_encode(array('status'=>0,'msg'=>'添加失败')));
             }
         }
         $admin = new Admins();
@@ -183,24 +184,24 @@ class Admin extends Base {
         $role_id = input('id');
         if (request()->post()) {
             $update_data= array();
-            $update_data['role_name'] = $_POST['roleName'];
+            $update_data['role_name'] = $_POST['name'];
             $update_data['desc'] = $_POST['desc'];
-            $update_data['menu_id'] = implode(',',$_POST['menuid']);
-            $info = Db::name('admin_role')->where(array('role_name'=>$_POST['roleName']))->where('role_id','neq',$role_id)->select();
+            $update_data['menu_id'] = $_POST['menuid'];
+            $info = Db::name('admin_role')->where(array('role_name'=>$_POST['name']))->where('role_id','neq',$role_id)->select();
             if (!empty($info)) {
-                $this->error('角色名已存在');
+                exit(json_encode(array('status'=>0,'msg'=>'当前名称已存在')));
             }
             $res = Db::name('admin_role')->where(array('role_id'=>$role_id))->update($update_data);
             if ($res) {
-                $this->success('编辑成功','admin/admin/role');
+                exit(json_encode(array('status'=>1,'msg'=>'编辑成功')));
             } else {
-                $this->error('编辑失败');
+                exit(json_encode(array('status'=>0,'msg'=>'编辑失败')));
             }
         } else {
             $roles = new Roles();
             $info = $roles->getRoleInfo($role_id);
             if (empty($info)) {
-                $this->error('信息错误');
+                 exit(json_encode(array('status'=>0,'msg'=>'信息错误')));
             }
             $admin = new Admins();
             $data = $admin->getAllPermissionInfo();
@@ -321,6 +322,24 @@ class Admin extends Base {
         $data = $menu->del_permission($id);
         exit(json_encode($data));
         
+    }
+
+    public function test(){
+        echo '<pre>';
+        $data = Db::name('admin_role')->field('menu_id')->select();
+        $tmp = array();
+        foreach ($data as $key => $value) {
+            $tmp[] = explode(',', $value['menu_id']);
+        }
+        foreach ($tmp as $k => $v) {
+            if (in_array(90,$v)) {
+                echo 22;
+            } else {
+                echo 333;
+            }
+        }
+        
+        // var_dump($tmp);
     }
     
 }
