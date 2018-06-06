@@ -164,8 +164,9 @@ function check(){
 		{names:names,email:email,phone:phone,password:password,status:status,role_id:role_id},
 		function (dat){
 			var data = JSON.parse(dat);
+			var msgs = data.msg;
 	        if(data.status == 1){
-	        	layer.msg('添加成功!', {
+	        	layer.msg(msgs, {
 				  icon: 1,
 				  time: 2000 //2秒关闭（如果不配置，默认是3秒）
 				}, function(){
@@ -175,7 +176,6 @@ function check(){
 					parent.layer.close(index);
 				}); 
 	        }else{
-	        	var msgs = data.msg;
 	            layer.msg(msgs,{icon:2,time:2000});
 	        }
 		}); 
