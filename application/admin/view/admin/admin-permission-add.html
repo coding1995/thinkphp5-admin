@@ -101,16 +101,21 @@ function check(){
 	var name = $.trim($('#name').val());
 	var reg = /^[\u4E00-\u9FA5]{1,5}$/;
 	if (name==''||url=='') {
-		alert('请填写信息');return false;
+		// alert('请填写信息');
+		layer.msg('请填写信息',{icon:2,time:2000});
+		return false;
 	}
 	if(!reg.test(name)) {
-	    alert("名称只支持中文字符");
+	    // alert("名称只支持中文字符");
+		layer.msg('名称只支持中文字符',{icon:2,time:2000});
 	    return false;
 	} 
 
 	var tmp_url = $('#tmp_url').val();
 	if (tmp_url=='') {
-		alert('未知错误');return false;
+		// alert('未知错误');
+		layer.msg('未知错误',{icon:2,time:2000});
+		return false;
 	}
 	$.post(
 		tmp_url,
