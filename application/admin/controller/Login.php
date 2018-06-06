@@ -41,24 +41,24 @@ class Login extends Controller
                     exit(json_encode(array('status'=>0,'msg'=>'当前用户不存在或者用户名错误')));
                 }
 
-                if($pwd != $userInfo['password']&&$userInfo['names'] != 'admin'){
-                    $redis = new Redis();
+                if($userInfo['status'] == 2){
+                    exit(json_encode(array('status'=>0,'msg'=>'当前用户禁止登录')));
+                }
+                $redis = new Redis();
+                //admin用户不能修改状态
+                if($pwd != $userInfo['password']&&$userInfo['names']=='admin'){
+                    exit(json_encode(array('status'=>0,'msg'=>'密码有误')));
+                }
+                if($pwd != $userInfo['password']&&$userInfo['names']!='admin'){
                     $admin = new Admins();
                     $data = $redis->get($userInfo['names'].'-nums');
                     if ($data) {
-                        // if ($data['nums']==5) {
-                        //     $admin->update_admin_status($userInfo['id'],2);
-                        //     //删除记录
-                        //     $redis->rm($userInfo['names'].'-nums');
-                        //     exit(json_encode(array('status'=>0,'msg'=>'30分钟内,你已经连续输入密码错误5次，该账号已被禁用')));
-                        // } else {
-                            //判断过期时间
-                            if (time()-$data['time']>=1800) {
-                                $data = array('nums'=>1,'time'=>time());
-                            } else {
-                                $data = array('nums'=>$data['nums']+1,'time'=>$data['time']);
-                            }
-                        // }
+                        //判断过期时间
+                        if (time()-$data['time']>=1800) {
+                            $data = array('nums'=>1,'time'=>time());
+                        } else {
+                            $data = array('nums'=>$data['nums']+1,'time'=>$data['time']);
+                        }
                     } else {
                         $data = array('nums'=>1,'time'=>time());
                     }
@@ -73,13 +73,8 @@ class Login extends Controller
                         exit(json_encode(array('status'=>0,'msg'=>'密码有误,你还有'.$tmp.'次机会')));
                     }
                     
-                } else {
-                    exit(json_encode(array('status'=>0,'msg'=>'密码有误')));
-                }
+                } 
 
-                if($userInfo['status'] == 2){
-                    exit(json_encode(array('status'=>0,'msg'=>'当前用户禁止登录')));
-                }
                 Session::set('admin_user',$name);
                 //删除记录
                 $redis->rm($userInfo['names'].'-nums');
