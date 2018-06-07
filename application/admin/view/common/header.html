@@ -15,11 +15,11 @@
 			</nav>
 			<nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
 				<ul class="cl">
-					<li>超级管理员</li>
-					<li class="dropDown dropDown_hover"> <a href="#" class="dropDown_A">{$admin} <i class="Hui-iconfont">&#xe6d5;</i></a>
+					<li>角色：{$role.role_name}</li>
+					<li class="dropDown dropDown_hover"> <a href="#" class="dropDown_A">用户名：{$admin} <i class="Hui-iconfont">&#xe6d5;</i></a>
 						<ul class="dropDown-menu menu radius box-shadow">
-							<li><a href="#">个人信息</a></li>
-							<li><a href="#">切换账户</a></li>
+							<li><a href="#" onclick="myselfinfo()">个人信息</a></li>
+							<input type="hidden" id="adminInfo" value='{if condition="!empty($adminInfo) eq true"}{$adminInfo}{/if}'>
 							<li><a href="{:url('admin/login/loginout')}">退出</a></li>
 						</ul>
 					</li>

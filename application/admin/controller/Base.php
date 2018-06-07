@@ -15,14 +15,15 @@ class Base extends Controller {
         if(empty($admin)){
             $this->redirect('admin/login/index');
         }else{
-            $admininfo = Db::name('admin_user')->where(array('names'=>$admin))->find();
+            $adminInfo = Db::name('admin_user')->where(array('names'=>$admin))->find();
         }
+        $role = Db::name('admin_role')->where('role_id',$adminInfo['role_id'])->field('role_name')->find();
         //获取当前管理员是否有当前进去的方法的权限
         $url = getActionUrl();
 
         //获取当前用户拥有的权限
         $roles = new Roles();
-        $auth = $roles->getAuthInfo($admininfo['role_id']);
+        $auth = $roles->getAuthInfo($adminInfo['role_id']);
         if ($auth==NULL) {
            echo '<script>alert("没有权限");请联系管理员</script>';exit;
         }
@@ -41,13 +42,15 @@ class Base extends Controller {
             }
         }
         //获取当前用户可以访问的菜单
-        $menuinfo = $roles->getMenuInfo($admininfo['role_id']);
-        if ($menuinfo==NULL) {
+        $menuInfo = $roles->getMenuInfo($adminInfo['role_id']);
+        if ($menuInfo==NULL) {
            echo '<script>alert("没有权限");请联系管理员</script>';exit;
         }
 
-        $this->assign('menuinfo',$menuinfo);
+        $this->assign('menuInfo',$menuInfo);
         $this->assign('admin',$admin);
+        $this->assign('role',$role);
+        $this->assign('adminInfo',json_encode($adminInfo));
         
         
     }

@@ -39,14 +39,15 @@
 
 /*个人信息*/
 function myselfinfo(){
+	var adminInfo = JSON.parse($('#adminInfo').val());
 	layer.open({
 		type: 1,
 		area: ['300px','200px'],
 		fix: false, //不固定
 		maxmin: true,
 		shade:0.4,
-		title: '查看信息',
-		content: '<div>管理员信息</div>'
+		title: '信息',
+		content: "<div><ul style='margin: 19px;padding: 2px;'><li>手机："+adminInfo.phone+"</li><li>邮箱："+adminInfo.email+"</li><li>最后登陆时间："+adminInfo.last_login+"</li><li>最后登陆ip："+adminInfo.last_ip+"</li></ul></div>"
 	});
 }
 
