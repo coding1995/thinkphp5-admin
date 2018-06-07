@@ -76,7 +76,9 @@
         function (dat){
             data = JSON.parse(dat);
               if(data.status == 1){
-                  window.location.href = "{url('admin/index/index')}";
+              		layer.msg('登陆成功',{icon:1,time:2000},function(){
+              			window.location.href = "{url('admin/index/index')}";
+              		});
               }else{
                   refreshVerify();
                   var msg = data.msg;
