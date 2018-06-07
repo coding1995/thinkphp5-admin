@@ -19,11 +19,12 @@ class Menu extends Base
             $where['name'] = array("like","%$keyword%");
             $where['type'] =  array('eq','menu');
             $menuInfo = Db::name('admin_menu')->where($where)->select();
+            $num = count($menuInfo);
         } else {
         	$menus = new Menus();
 			$menuInfo = $menus->getMenu();
+			$num = count(Db::name('admin_menu')->where(array('type'=>'menu'))->select());
         }
-        $num = count($menuInfo);
 		$this->assign('menuInfo',$menuInfo);
 		$this->assign('keyword',$keyword);
 		$this->assign('num',$num);
