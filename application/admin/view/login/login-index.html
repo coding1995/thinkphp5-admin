@@ -12,7 +12,7 @@
 <link href="__STATIC__/lib/Hui-iconfont/1.0.8/iconfont.css" rel="stylesheet" type="text/css" />
 <title>后台登录</title>
 </head>
-<body>
+<body onkeydown="on_return();">
 <input type="hidden" id="TenantId" name="TenantId" value="" />
 <div class="header"></div>
 <div class="loginWraper">
@@ -45,7 +45,7 @@
       </div>
       <div class="row cl">
         <div class="formControls col-xs-8 col-xs-offset-3">
-          <input name="" type="button" class="btn btn-success radius size-L" value="&nbsp;登&nbsp;&nbsp;&nbsp;&nbsp;录&nbsp;" onclick="check()" style="width:94.41px">
+          <input name="" type="button" class="btn btn-success radius size-L" value="&nbsp;登&nbsp;&nbsp;&nbsp;&nbsp;录&nbsp;" id="sub" onclick="check()" style="width:94.41px">
           <input name="" type="reset" class="btn btn-default radius size-L" value="&nbsp;取&nbsp;&nbsp;&nbsp;&nbsp;消&nbsp;">
         </div>
       </div>
@@ -93,13 +93,23 @@
     }
   }
 
-  function refreshVerify() {
-    var ts = Date.parse(new Date())/1000;
-    $('#verify_img').attr("src", "/captcha?id="+ts);
-  }
+	function refreshVerify() {
+	    var ts = Date.parse(new Date())/1000;
+	    $('#verify_img').attr("src", "/captcha?id="+ts);
+	}
 
-  function changep(){
-    $('input[name=is_rem]').val(0);
-  }
+  	function changep(){
+    	$('input[name=is_rem]').val(0);
+  	}
+
+
+    //回车时，默认是登陆
+	function on_return(){
+		if(window.event.keyCode == 13){
+		 	if ($('#sub')!=null) {
+		 		check();
+		 	}
+		}
+ 	}
 
 </script>
