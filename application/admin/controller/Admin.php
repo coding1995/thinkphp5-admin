@@ -158,7 +158,7 @@ class Admin extends Base {
             $insert_data= array();
             $insert_data['role_name'] = $_POST['name'];
             $insert_data['desc'] = $_POST['desc'];
-            $insert_data['menu_id'] = $_POST['menuid'];
+            $insert_data['menu_id'] = trim($_POST['menuid'],',');
             $info = Db::name('admin_role')->where(array('role_name'=>$_POST['name']))->select();
             if (!empty($info)) {
                 exit(json_encode(array('status'=>0,'msg'=>'当前名称已存在')));
@@ -187,7 +187,7 @@ class Admin extends Base {
             $update_data= array();
             $update_data['role_name'] = $_POST['name'];
             $update_data['desc'] = $_POST['desc'];
-            $update_data['menu_id'] = $_POST['menuid'];
+            $update_data['menu_id'] = trim($_POST['menuid'],',');
             $info = Db::name('admin_role')->where(array('role_name'=>$_POST['name']))->where('role_id','neq',$role_id)->select();
             if (!empty($info)) {
                 exit(json_encode(array('status'=>0,'msg'=>'当前名称已存在')));
